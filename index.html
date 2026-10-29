@@ -28,6 +28,17 @@ input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
 .opt svg{width:32px;height:51px;display:block;margin:0 auto 7px;fill:#8895b5;transition:fill .18s}
 .opt.on{background:linear-gradient(160deg,rgba(101,88,245,.24),rgba(101,88,245,.1));border-color:#8175ff;color:#fff;box-shadow:inset 0 0 0 1px rgba(129,117,255,.14)}
 .opt.on svg{fill:#b8b2ff}
+#sil .opt{padding:12px 3px 11px;min-height:104px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-size:10px}
+#sil .opt svg{width:34px;height:49px;margin:0 auto;fill:none;stroke:#8795b8;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#sil .opt.on svg{fill:none;stroke:#c3bdff}
+#bel.opts{grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#bel .opt{padding:12px 3px 11px;min-height:76px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;font-size:10px}
+.belly-meter{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:17px}
+.belly-meter i{display:block;width:4px;border-radius:4px;background:#52617f;height:6px}
+.belly-meter i:nth-child(2){height:9px}.belly-meter i:nth-child(3){height:12px}.belly-meter i:nth-child(4){height:15px}.belly-meter i:nth-child(5){height:17px}
+#bel .opt.on .belly-meter i{background:#a99fff}
+#bel .opt.on .belly-meter i:nth-child(n+4){background:#c4bfff}
+@media(max-width:360px){#sil .opt{min-height:94px}#sil .opt svg{width:30px;height:43px}#bel .opt{font-size:9px}}
 .main{width:100%;margin-top:28px;padding:16px;border:0;border-radius:15px;background:linear-gradient(135deg,#8175ff,#5d55e9);color:#fff;font-size:15px;font-weight:750;letter-spacing:-.01em;box-shadow:0 9px 25px rgba(101,88,245,.24);transition:transform .15s,filter .15s}
 .main:active{transform:scale(.985);filter:brightness(.95)}
 .note{margin-top:13px;color:#a5b4fc;text-align:center;min-height:20px;font-size:13px;font-weight:600}
@@ -47,10 +58,12 @@ input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
 <div class='row'><span>Вес</span><span class='val'><span id='wv'>70</span><small>кг</small></span></div>
 <div class='ctl'><button data-t='w' data-d='-1'>−</button><input id='w' type='range' min='40' max='150' value='70'><button data-t='w' data-d='1'>+</button></div>
 
-<div class='label'>Силуэт</div>
+<div class='label'>Тип фигуры</div>
+<div class='sub' style='margin:-5px 0 10px'>Выбери форму, которая больше похожа на твою</div>
 <div class='opts' id='sil'></div>
 
-<div class='label'>Живот</div>
+<div class='label'>Объём живота</div>
+<div class='sub' style='margin:-5px 0 10px'>Выбери наиболее близкий вариант</div>
 <div class='opts' id='bel'></div>
 
 <button class='main' id='save'>Сохранить профиль</button>
@@ -75,7 +88,10 @@ const BEL=[
 ];
 function icon(s,w,h){
 const c=30;
-return `<svg viewBox='0 0 60 100'><circle cx='30' cy='11' r='8'/><path stroke-linejoin='round' d='M${c-s} 26 L${c+s} 26 L${c+w} 55 L${c+h} 78 L${c+h*0.7} 98 L${c+2} 98 L${c} 80 L${c-2} 98 L${c-h*0.7} 98 L${c-h} 78 L${c-w} 55 Z'/></svg>`;
+return `<svg viewBox='0 0 60 100' aria-hidden='true'><circle cx='30' cy='13' r='7.5'/><path d='M24 25 Q20 27 17 35 L12 51 Q11 55 15 57 L20 44 L21 60 Q30 ${60+h*.12} 39 60 L40 44 L45 57 Q49 55 48 51 L43 35 Q40 27 36 25 L34 24 L26 24 Z' fill='currentColor' stroke='none'/><path d='M21 61 Q30 ${61+h*.3} 39 61 L42 79 L37 79 L35 68 L33 94 L27 94 L25 68 L23 79 L18 79 Z' fill='currentColor' stroke='none'/></svg>`;
+}
+function bellyMeter(level){
+return `<span class='belly-meter' aria-hidden='true'>${[1,2,3,4,5].map((n)=>`<i style='${n>level?'opacity:.28':''}'></i>`).join('')}</span>`;
 }
 let saved={};
 try{saved=JSON.parse(localStorage.getItem('razmerchik_profile')||'{}')}catch(e){}
@@ -97,7 +113,7 @@ document.getElementById('w').value=state.w;
 document.getElementById('hv').textContent=state.h;
 document.getElementById('wv').textContent=state.w;
 renderOpts('sil',SIL,'sil',o=>icon(o.s,o.w,o.h));
-renderOpts('bel',BEL,'bel',o=>icon(14,o.w,14));
+renderOpts('bel',BEL,'bel',o=>bellyMeter(BEL.indexOf(o)+1));
 const sil=SIL[state.sil],bel=BEL[state.bel];
 const scale=0.55+(state.h-140)/70*0.45;
 const bulk=(state.w-40)/110;
