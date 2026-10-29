@@ -85,15 +85,33 @@ const BEL=[
 {n:'Большой',w:22}
 ];
 function icon(s,w,h){
-const shoulder=15+(s-15)*0.55;
-const waist=10+(w-12)*0.45;
-const hip=12+(h-12)*0.5;
-const sl=30-shoulder, sr=30+shoulder, wl=30-waist, wr=30+waist, hl=30-hip, hr=30+hip;
-return `<svg viewBox='0 0 60 100' aria-hidden='true'><circle cx='30' cy='11' r='7' fill='currentColor' stroke='none'/><path d='M24 20 Q${sl+3} 21 ${sl} 29 L${sl-4} 44 Q${sl-5} 48 ${sl-1} 50 L${sl+2} 49 L${sl+5} 38 L${wl} 57 Q30 61 ${wr} 57 L${sr-5} 38 L${sr-2} 49 L${sr+1} 50 Q${sr+5} 48 ${sr+4} 44 L${sr} 29 Q${sr-3} 21 36 20 Z' fill='currentColor' stroke='none'/><path d='M${wl} 57 Q30 61 ${wr} 57 L${hr} 73 L${hr-3} 77 L34 70 L33 95 L27 95 L26 70 L${hl+3} 77 L${hl} 73 Z' fill='currentColor' stroke='none'/></svg>`;
+const shapes=[
+{shoulder:18,waist:11,hip:13,torso:'taper'},
+{shoulder:19,waist:10,hip:14,torso:'athletic'},
+{shoulder:14,waist:13,hip:14,torso:'straight'},
+{shoulder:12,waist:11,hip:19,torso:'pear'},
+{shoulder:15,waist:19,hip:17,torso:'oval'}
+];
+const i=Math.max(0,Math.min(4,SIL.findIndex(x=>x.s===s&&x.w===w&&x.h===h)));
+const a=shapes[i],L=x=>30-x,R=x=>30+x;
+let torso='';
+if(a.torso==='taper') torso=`M24 20 Q${L(a.shoulder-2)} 21 ${L(a.shoulder)} 30 L${L(a.shoulder-2)} 43 Q${L(a.shoulder-3)} 48 ${L(a.waist)} 54 Q30 58 ${R(a.waist)} 54 Q${R(a.shoulder-3)} 48 ${R(a.shoulder-2)} 43 L${R(a.shoulder)} 30 Q${R(a.shoulder-2)} 21 36 20 Z`;
+else if(a.torso==='athletic') torso=`M24 20 Q${L(a.shoulder-1)} 20 ${L(a.shoulder)} 29 L${L(a.shoulder-2)} 43 Q${L(a.shoulder-3)} 47 ${L(a.waist)} 53 L${L(a.hip)} 60 Q30 63 ${R(a.hip)} 60 L${R(a.waist)} 53 Q${R(a.shoulder-3)} 47 ${R(a.shoulder-2)} 43 L${R(a.shoulder)} 29 Q${R(a.shoulder-1)} 20 36 20 Z`;
+else if(a.torso==='straight') torso=`M24 20 Q${L(a.shoulder)} 22 ${L(a.shoulder)} 30 L${L(a.shoulder)} 48 Q${L(a.waist)} 53 ${L(a.waist)} 57 L${L(a.hip)} 61 Q30 63 ${R(a.hip)} 61 L${R(a.waist)} 57 Q${R(a.waist)} 53 ${R(a.shoulder)} 48 L${R(a.shoulder)} 30 Q${R(a.shoulder)} 22 36 20 Z`;
+else if(a.torso==='pear') torso=`M24 20 Q${L(a.shoulder)} 22 ${L(a.shoulder)} 30 L${L(a.shoulder-1)} 43 Q${L(a.waist)} 49 ${L(a.hip)} 58 L${L(a.hip)} 64 Q30 69 ${R(a.hip)} 64 L${R(a.hip)} 58 Q${R(a.waist)} 49 ${R(a.shoulder-1)} 43 L${R(a.shoulder)} 30 Q${R(a.shoulder)} 22 36 20 Z`;
+else torso=`M24 20 Q${L(a.shoulder)} 22 ${L(a.shoulder)} 30 L${L(a.shoulder-1)} 43 Q${L(a.waist)} 48 ${L(a.waist)} 55 Q${L(a.waist-2)} 63 30 64 Q${R(a.waist-2)} 63 ${R(a.waist)} 55 Q${R(a.waist)} 48 ${R(a.shoulder-1)} 43 L${R(a.shoulder)} 30 Q${R(a.shoulder)} 22 36 20 Z`;
+return `<svg viewBox='0 0 60 100' aria-hidden='true'><circle cx='30' cy='11' r='7' fill='currentColor' stroke='none'/><path d='${torso}' fill='currentColor' stroke='none'/><path d='M${L(a.hip)} 60 L${L(a.hip-2)} 76 L25 95 L30 95 L33 74 L35 95 L40 95 L${R(a.hip)} 76 L${R(a.hip)} 60 Z' fill='currentColor' stroke='none'/><path d='M${L(a.shoulder)} 30 L${L(a.shoulder+4)} 48 L${L(a.shoulder+1)} 50 L${L(a.shoulder-1)} 43 M${R(a.shoulder)} 30 L${R(a.shoulder+4)} 48 L${R(a.shoulder+1)} 50 L${R(a.shoulder-1)} 43' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round'/></svg>`;
 }
 function bellyIcon(level){
-const bulge=[0,1.5,3,5,7][level-1];
-return `<svg viewBox='0 0 60 100' aria-hidden='true'><circle cx='29' cy='11' r='7' fill='currentColor' stroke='none'/><path d='M23 20 Q17 23 17 31 L14 47 Q13 51 17 53 L21 40 L22 57 Q${25+bulge} 61 ${28+bulge} 59 Q${31+bulge} 56 ${30+bulge} 48 L31 38 L36 48 L39 46 L35 29 Q34 22 31 20 Z' fill='currentColor' stroke='none'/><path d='M22 57 L22 72 L19 94 L25 94 L29 73 L32 94 L38 94 L35 71 L35 57 Z' fill='currentColor' stroke='none'/></svg>`;
+const profiles=[
+{belly:25,top:30,front:30},
+{belly:28,top:31,front:32},
+{belly:32,top:32,front:36},
+{belly:37,top:33,front:40},
+{belly:42,top:34,front:44}
+];
+const p=profiles[level-1];
+return `<svg viewBox='0 0 60 100' aria-hidden='true'><circle cx='26' cy='11' r='7' fill='currentColor' stroke='none'/><path d='M22 20 Q16 22 16 30 L14 44 Q13 49 17 51 L20 43 L22 57 L${p.top} 57 Q${p.front} 52 ${p.belly} 43 L${p.belly-2} 34 Q${p.belly-2} 25 30 21 Z' fill='currentColor' stroke='none'/><path d='M22 57 L22 73 L19 94 L25 94 L29 72 L32 94 L38 94 L35 72 L35 57 Z' fill='currentColor' stroke='none'/><path d='M18 31 L12 47 L16 49 L21 39 M30 22 Q${p.belly-1} 26 ${p.belly-2} 34' fill='none' stroke='currentColor' stroke-width='1.5' stroke-linecap='round'/></svg>`;
 }
 let saved={};
 try{saved=JSON.parse(localStorage.getItem('razmerchik_profile')||'{}')}catch(e){}
