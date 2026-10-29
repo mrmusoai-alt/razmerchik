@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang='ru'>
+<head>
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
+<title>Размерчик — подбор</title>
+<script src='https://telegram.org/js/telegram-web-app.js'></script>
+<style>
+:root{--bg:#141418;--card:#222228;--text:#f2f0ea;--muted:#8d8b86;--gold:#d4b97a;--accent:#7a1f33}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px 14px 50px}
+h1{font-size:22px;margin:4px 0 2px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:10px}
+.nav{display:flex;gap:6px;margin-bottom:14px}
+.nav a{flex:1;text-align:center;padding:10px;border-radius:10px;background:var(--card);color:var(--muted);text-decoration:none;font-size:14px}
+.nav a.on{background:#f2f0ea;color:#111;font-weight:700}
+.label{color:var(--text);font-weight:700;margin:22px 0 4px}
+.hint2{color:var(--muted);font-size:13px;margin-bottom:8px}
+.seg{display:flex;gap:6px;margin:8px 0}
+.seg button{flex:1;padding:10px;border-radius:10px;border:1px solid #333;background:var(--card);color:var(--text);font-size:14px}
+.seg button.on{background:#f2f0ea;color:#111;font-weight:700}
+.fld{display:flex;justify-content:space-between;align-items:center;background:var(--card);border-radius:10px;padding:8px 12px;margin-bottom:6px;color:var(--muted);font-size:14px}
+.fld input{width:90px;background:#141418;border:1px solid #333;border-radius:8px;color:var(--text);font-size:18px;padding:8px;text-align:right}
+textarea{width:100%;min-height:130px;background:var(--card);border:1px solid #333;border-radius:10px;color:var(--text);font-size:16px;padding:10px;font-family:inherit}
+.main{width:100%;margin-top:20px;padding:15px;border:0;border-radius:12px;background:var(--accent);color:#fff;font-size:16px;font-weight:700}
+.sec{background:#2c2c34;color:var(--text);border:0;border-radius:10px;padding:12px;width:100%;margin-top:10px;font-size:14px}
+.res{background:var(--card);border-radius:14px;padding:16px;margin-top:16px}
+.big{font-size:44px;font-weight:800;color:var(--gold);line-height:1.1}
+.conf{margin:4px 0 10px;font-size:14px}
+.hi{color:#7bd88f}.mid{color:var(--gold)}.lo{color:#e57373}
+.det{font-size:14px;color:var(--muted);margin:3px 0}
+.tb{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+.tb td{padding:6px 4px;border-top:1px solid #333}
+.tb tr.best td{color:var(--gold);font-weight:700}
+</style>
+</head>
+<body>
+<div class='nav'><a href='index.html'>Профиль</a><a class='on' href='match.html'>Подбор размера</a></div>
+<h1>Подбор размера</h1>
+<div class='sub'>Сравним мерки товара с твоей любимой вещью</div>
+
+<div class='seg' id='modeSeg'><button data-m='top' class='on'>Верх</button><button data-m='bottom'>Низ</button></div>
+
+<div class='label'>1. Твоя вещь, которая сидит идеально</div>
+<div class='hint2'>Положи вещь плашмя и измерь ширину от шва до шва. Введёшь один раз, дальше запомнится.</div>
+<div id='ref'></div>
+
+<div class='label'>2. Таблица размеров товара</div>
+<div class='hint2'>Мерки в таблице магазина:</div>
+<div class='seg' id='circSeg'><button data-c='0' class='on'>Плашмя</button><button data-c='1'>Обхват</button></div>
+<div class='hint2' id='hint'></div>
+<textarea id='tbl' placeholder='S 50 68&#10;M 52 70&#10;L 54 72&#10;XL 56 74'></textarea>
+
+<button class='main' id='go'>Подобрать размер</button>
+<div id='out'></div>
+
+<button class='sec' id='copy'>В карточке нет таблицы? Скопировать сообщение продавцу</button>
+
+<script>
+const tg=window.Telegram&&Telegram.WebApp;
+if(tg){tg.ready();tg.expand();}
+const NL=String.fromCharCode(10);
+const MODES={
+top:{fields:[{k:'chest',n:'Ширина по груди',w:2,c:1},{k:'len',n:'Длина',w:1,c:0}]},
+bottom:{fields:[{k:'waist',n:'Ширина по поясу',w:2,c:1},{k:'hip',n:'Ширина по бёдрам',w:1.5,c:1},{k:'len',n:'Длина по внутреннему шву',w:1,c:0}]}
+};
+let mode='top',circ=false;
+const $=id=>document.getElementById(id);
+const key=()=>'razmerchik_ref_'+mode;
+function loadRef(){try{return JSON.parse(localStorage.getItem(key())||'{}')}catch(e){return {}}}
+function renderRef(){
+const f=MODES[mode].fields,r=loadRef();
+$('ref').innerHTML=f.map(x=>`<label class='fld'><span>${x.n}, см</span><input type='number' inputmode='decimal' step='0.5' data-k='${x.k}' value='${r[x.k]===undefined?'':r[x.k]}'></label>`).join('');
+$('ref').querySelectorAll('input').forEach(i=>{i.oninput=()=>{const r2=loadRef();r2[i.dataset.k]=i.value===''?undefined:parseFloat(i.value);try{localStorage.setItem(key(),JSON.stringify(r2))}catch(e){}}});
+$('hint').textContent='Порядок цифр в строке: размер, '+f.map(x=>x.n.toLowerCase()).join(', ');
+}
+function num(t){
+t=t.replace(/,+$/,'').replace(',','.');
+const m=t.match(/^([0-9]+([.][0-9]+)?)[-–]([0-9]+([.][0-9]+)?)$/);
+if(m)return(parseFloat(m[1])+parseFloat(m[3]))/2;
+return /^[0-9]+([.][0-9]+)?$/.test(t)?parseFloat(t):NaN;
+}
+function parseTable(text,n){
+const lines=text.split(String.fromCharCode(13)).join('').split(NL);
+return lines.map(l=>l.split(';').join(' ').split(String.fromCharCode(9)).join(' ').split(' ').filter(Boolean)).filter(t=>t.length>1).map(t=>({label:t[0].replace(/,+$/,''),vals:t.slice(1,1+n).map(num)})).filter(r=>r.vals.length&&r.vals.every(v=>!isNaN(v)));
+}
+const msg=t=>`<div class='res'>${t}</div>`;
+const fmt=v=>v.toFixed(1).replace('.0','');
+function calc(){
+const f=MODES[mode].fields,ref=loadRef(),out=$('out');
+const rows=parseTable($('tbl').value,f.length);
+if(!f.some(x=>typeof ref[x.k]==='number')){out.innerHTML=msg('Сначала введи мерки своей вещи в первом шаге.');return;}
+if(rows.length<2){out.innerHTML=msg('Вставь хотя бы две строки таблицы, например: M 52 70');return;}
+const m=Math.min.apply(null,rows.map(r=>r.vals.length));
+const res=rows.map(r=>{
+let total=0;const det=[];
+f.slice(0,m).forEach((x,i)=>{
+if(typeof ref[x.k]!=='number')return;
+let v=r.vals[i];
+if(circ&&x.c)v=v/2;
+const d=v-ref[x.k];
+total+=Math.abs(d)*x.w;
+det.push({n:x.n,d:d,v:v});
+});
+return {label:r.label,total:total,det:det};
+}).filter(r=>r.det.length);
+if(!res.length){out.innerHTML=msg('Не получилось сопоставить: проверь, что цифры идут в нужном порядке.');return;}
+const sorted=res.slice().sort((a,b)=>a.total-b.total);
+const best=sorted[0],second=sorted[1];
+const maxAbs=Math.max.apply(null,best.det.map(d=>Math.abs(d.d)));
+const gap=second?second.total-best.total:99;
+let cls='lo',txt='Низкая уверенность: ни один размер не совпал близко. Лучше уточнить замеры у продавца.';
+if(maxAbs<=1.5&&gap>=1){cls='hi';txt='Высокая уверенность: брать можно.';}
+else if(maxAbs<=3){cls='mid';txt='Средняя уверенность: отличие от эталона пара сантиметров.';}
+const det=best.det.map(d=>`<div class='det'>${d.n}: ${fmt(d.v)} см, ${Math.abs(d.d)<0.25?'как у твоей вещи':fmt(Math.abs(d.d))+' см '+(d.d>0?'больше':'меньше')+' твоей вещи'}</div>`).join('');
+const tb=`<table class='tb'>${res.map(r=>`<tr class='${r===best?'best':''}'><td>${r.label}</td><td>отклонение ${fmt(r.total)}</td></tr>`).join('')}</table>`;
+out.innerHTML=`<div class='res'><div class='hint2'>Твой размер</div><div class='big'>${best.label}</div><div class='conf ${cls}'>${txt}</div>${det}${tb}</div>`;
+out.scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('#modeSeg button').forEach(b=>{b.onclick=()=>{mode=b.dataset.m;document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));$('out').innerHTML='';renderRef();}});
+document.querySelectorAll('#circSeg button').forEach(b=>{b.onclick=()=>{circ=b.dataset.c==='1';document.querySelectorAll('#circSeg button').forEach(x=>x.classList.toggle('on',x===b));}});
+$('go').onclick=calc;
+$('copy').onclick=()=>{
+const names=MODES[mode].fields.map(x=>x.n.toLowerCase()).join(', ');
+const t='Здравствуйте! Пришлите, пожалуйста, замеры изделия в сантиметрах (плашмя): '+names+'. Хочу подобрать размер.';
+const done=()=>{$('copy').textContent='Скопировано ✓ Отправь продавцу'};
+if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done).catch(()=>{$('copy').textContent=t});}else{$('copy').textContent=t;}
+};
+renderRef();
+</script>
+</body>
+</html>

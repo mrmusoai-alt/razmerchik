@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang='ru'>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
 <title>Размерчик</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src='https://telegram.org/js/telegram-web-app.js'></script>
 <style>
 :root{--bg:#141418;--card:#222228;--text:#f2f0ea;--muted:#8d8b86;--gold:#d4b97a;--accent:#7a1f33}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px 14px 40px}
 h1{font-size:22px;margin:4px 0 2px}
 .sub{color:var(--muted);font-size:14px;margin-bottom:14px}
+.nav{display:flex;gap:6px;margin-bottom:14px}
+.nav a{flex:1;text-align:center;padding:10px;border-radius:10px;background:var(--card);color:var(--muted);text-decoration:none;font-size:14px}
+.nav a.on{background:#f2f0ea;color:#111;font-weight:700}
 .fig{display:flex;justify-content:center;margin:6px 0 14px}
 .row{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;color:var(--muted)}
 .val{font-size:30px;font-weight:700;color:var(--text)}
@@ -29,91 +32,84 @@ input[type=range]{flex:1;accent-color:var(--gold);height:30px}
 </style>
 </head>
 <body>
+<div class='nav'><a class='on' href='index.html'>Профиль</a><a href='match.html'>Подбор размера</a></div>
 <h1>Размерчик</h1>
-<div class="sub">Заполни профиль один раз — дальше подберём размер</div>
+<div class='sub'>Заполни профиль один раз — дальше подберём размер</div>
 
-<div class="fig" id="fig"></div>
+<div class='fig' id='fig'></div>
 
-<div class="row"><span>Рост</span><span class="val"><span id="hv">175</span><small>см</small></span></div>
-<div class="ctl"><button data-t="h" data-d="-1">−</button><input id="h" type="range" min="140" max="210" value="175"><button data-t="h" data-d="1">+</button></div>
+<div class='row'><span>Рост</span><span class='val'><span id='hv'>175</span><small>см</small></span></div>
+<div class='ctl'><button data-t='h' data-d='-1'>−</button><input id='h' type='range' min='140' max='210' value='175'><button data-t='h' data-d='1'>+</button></div>
 
-<div class="row"><span>Вес</span><span class="val"><span id="wv">70</span><small>кг</small></span></div>
-<div class="ctl"><button data-t="w" data-d="-1">−</button><input id="w" type="range" min="40" max="150" value="70"><button data-t="w" data-d="1">+</button></div>
+<div class='row'><span>Вес</span><span class='val'><span id='wv'>70</span><small>кг</small></span></div>
+<div class='ctl'><button data-t='w' data-d='-1'>−</button><input id='w' type='range' min='40' max='150' value='70'><button data-t='w' data-d='1'>+</button></div>
 
-<div class="label">Силуэт</div>
-<div class="opts" id="sil"></div>
+<div class='label'>Силуэт</div>
+<div class='opts' id='sil'></div>
 
-<div class="label">Живот</div>
-<div class="opts" id="bel"></div>
+<div class='label'>Живот</div>
+<div class='opts' id='bel'></div>
 
-<button class="main" id="save">Сохранить профиль</button>
-<div class="note" id="note"></div>
+<button class='main' id='save'>Сохранить профиль</button>
+<div class='note' id='note'></div>
 
 <script>
-const tg = window.Telegram && Telegram.WebApp;
-if (tg) { tg.ready(); tg.expand(); }
-
-const SIL = [
-  {n:'Трапеция', s:18, w:12, h:11},
-  {n:'Атлет',    s:21, w:12, h:13},
-  {n:'Прямой',   s:15, w:15, h:15},
-  {n:'Груша',    s:12, w:13, h:19},
-  {n:'Овал',     s:15, w:20, h:16}
+const tg=window.Telegram&&Telegram.WebApp;
+if(tg){tg.ready();tg.expand();}
+const SIL=[
+{n:'Трапеция',s:18,w:12,h:11},
+{n:'Атлет',s:21,w:12,h:13},
+{n:'Прямой',s:15,w:15,h:15},
+{n:'Груша',s:12,w:13,h:19},
+{n:'Овал',s:15,w:20,h:16}
 ];
-const BEL = [
-  {n:'Плоский', w:11},
-  {n:'Лёгкий',  w:13},
-  {n:'Средний', w:16},
-  {n:'Заметный',w:19},
-  {n:'Большой', w:22}
+const BEL=[
+{n:'Плоский',w:11},
+{n:'Лёгкий',w:13},
+{n:'Средний',w:16},
+{n:'Заметный',w:19},
+{n:'Большой',w:22}
 ];
-
-function icon(s, w, h) {
-  const c = 30;
-  return '<svg viewBox="0 0 60 100"><circle cx="30" cy="11" r="8"/>' +
-    '<path stroke-linejoin="round" d="M' + (c - s) + ' 26 L' + (c + s) + ' 26 L' + (c + w) + ' 55 L' + (c + h) + ' 78 L' + (c + h * 0.7) + ' 98 L' + (c + 2) + ' 98 L' + c + ' 80 L' + (c - 2) + ' 98 L' + (c - h * 0.7) + ' 98 L' + (c - h) + ' 78 L' + (c - w) + ' 55 Z"/></svg>';
+function icon(s,w,h){
+const c=30;
+return `<svg viewBox='0 0 60 100'><circle cx='30' cy='11' r='8'/><path stroke-linejoin='round' d='M${c-s} 26 L${c+s} 26 L${c+w} 55 L${c+h} 78 L${c+h*0.7} 98 L${c+2} 98 L${c} 80 L${c-2} 98 L${c-h*0.7} 98 L${c-h} 78 L${c-w} 55 Z'/></svg>`;
 }
-
-const state = Object.assign({h:175, w:70, sil:2, bel:1}, JSON.parse(localStorage.getItem('razmerchik_profile') || '{}'));
-
-function renderOpts(id, list, key, mk) {
-  const el = document.getElementById(id);
-  el.innerHTML = '';
-  list.forEach((o, i) => {
-    const d = document.createElement('div');
-    d.className = 'opt' + (state[key] === i ? ' on' : '');
-    d.innerHTML = mk(o) + o.n;
-    d.onclick = () => { state[key] = i; render(); };
-    el.appendChild(d);
-  });
-}
-
-function render() {
-  document.getElementById('h').value = state.h;
-  document.getElementById('w').value = state.w;
-  document.getElementById('hv').textContent = state.h;
-  document.getElementById('wv').textContent = state.w;
-  renderOpts('sil', SIL, 'sil', o => icon(o.s, o.w, o.h));
-  renderOpts('bel', BEL, 'bel', o => icon(14, o.w, 14));
-  const sil = SIL[state.sil], bel = BEL[state.bel];
-  const scale = 0.55 + (state.h - 140) / 70 * 0.45;
-  const bulk = (state.w - 40) / 110;
-  const s = sil.s * (0.8 + bulk * 0.6), w = (sil.w + bel.w) / 2 * (0.8 + bulk * 0.6), h = sil.h * (0.8 + bulk * 0.6);
-  document.getElementById('fig').innerHTML = icon(s, w, h).replace('<svg ', '<svg style="fill:#a9a595;height:' + (200 * scale).toFixed(0) + 'px" ');
-}
-
-document.getElementById('h').oninput = e => { state.h = +e.target.value; render(); };
-document.getElementById('w').oninput = e => { state.w = +e.target.value; render(); };
-document.querySelectorAll('.ctl button').forEach(b => b.onclick = () => {
-  const k = b.dataset.t; state[k] += +b.dataset.d; render();
+let saved={};
+try{saved=JSON.parse(localStorage.getItem('razmerchik_profile')||'{}')}catch(e){}
+const state=Object.assign({h:175,w:70,sil:2,bel:1},saved);
+function renderOpts(id,list,k,mk){
+const el=document.getElementById(id);
+el.innerHTML='';
+list.forEach((o,i)=>{
+const d=document.createElement('div');
+d.className='opt'+(state[k]===i?' on':'');
+d.innerHTML=mk(o)+o.n;
+d.onclick=()=>{state[k]=i;render();};
+el.appendChild(d);
 });
-
-document.getElementById('save').onclick = () => {
-  try { localStorage.setItem('razmerchik_profile', JSON.stringify(state)); } catch (e) {}
-  document.getElementById('note').textContent = 'Профиль сохранён ✓';
-  if (tg && tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
+function render(){
+document.getElementById('h').value=state.h;
+document.getElementById('w').value=state.w;
+document.getElementById('hv').textContent=state.h;
+document.getElementById('wv').textContent=state.w;
+renderOpts('sil',SIL,'sil',o=>icon(o.s,o.w,o.h));
+renderOpts('bel',BEL,'bel',o=>icon(14,o.w,14));
+const sil=SIL[state.sil],bel=BEL[state.bel];
+const scale=0.55+(state.h-140)/70*0.45;
+const bulk=(state.w-40)/110;
+const k=0.8+bulk*0.6;
+const s=sil.s*k,w=(sil.w+bel.w)/2*k,h=sil.h*k;
+document.getElementById('fig').innerHTML=icon(s,w,h).replace('<svg ',`<svg style='fill:#a9a595;height:${(200*scale).toFixed(0)}px' `);
+}
+document.getElementById('h').oninput=e=>{state.h=+e.target.value;render();};
+document.getElementById('w').oninput=e=>{state.w=+e.target.value;render();};
+document.querySelectorAll('.ctl button').forEach(b=>{b.onclick=()=>{state[b.dataset.t]+=+b.dataset.d;render();};});
+document.getElementById('save').onclick=()=>{
+try{localStorage.setItem('razmerchik_profile',JSON.stringify(state));}catch(e){}
+document.getElementById('note').textContent='Профиль сохранён ✓';
+if(tg&&tg.HapticFeedback)tg.HapticFeedback.notificationOccurred('success');
 };
-
 render();
 </script>
 </body>
