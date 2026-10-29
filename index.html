@@ -6,29 +6,32 @@
 <title>Размерчик</title>
 <script src='https://telegram.org/js/telegram-web-app.js'></script>
 <style>
-:root{--bg:#141418;--card:#222228;--text:#f2f0ea;--muted:#8d8b86;--gold:#d4b97a;--accent:#7a1f33}
+:root{color-scheme:dark;--bg:#0b1020;--card:#141c30;--card2:#19243b;--text:#f3f6ff;--muted:#929db5;--line:rgba(160,177,220,.16);--gold:#a5b4fc;--accent:#6558f5;--accent2:#8b5cf6}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:16px 14px 40px}
-h1{font-size:22px;margin:4px 0 2px}
-.sub{color:var(--muted);font-size:14px;margin-bottom:14px}
-.nav{display:flex;gap:6px;margin-bottom:14px}
-.nav a{flex:1;text-align:center;padding:10px;border-radius:10px;background:var(--card);color:var(--muted);text-decoration:none;font-size:14px}
-.nav a.on{background:#f2f0ea;color:#111;font-weight:700}
-.fig{display:flex;justify-content:center;margin:6px 0 14px}
-.row{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px;color:var(--muted)}
-.val{font-size:30px;font-weight:700;color:var(--text)}
-.val small{font-size:14px;color:var(--muted);margin-left:4px;font-weight:400}
-.ctl{display:flex;align-items:center;gap:10px;margin-top:6px}
-.ctl button{width:44px;height:44px;border-radius:10px;border:1px solid #333;background:var(--card);color:var(--text);font-size:22px}
-input[type=range]{flex:1;accent-color:var(--gold);height:30px}
-.label{color:var(--muted);margin:20px 0 8px}
-.opts{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.opt{background:var(--card);border:1px solid #333;border-radius:10px;padding:8px 2px 6px;text-align:center;font-size:11px;color:var(--text)}
-.opt svg{width:34px;height:56px;display:block;margin:0 auto 4px;fill:#d9d6cc}
-.opt.on{background:#f2f0ea;color:#111}
-.opt.on svg{fill:#111}
-.main{width:100%;margin-top:24px;padding:15px;border:0;border-radius:12px;background:var(--accent);color:#fff;font-size:16px;font-weight:700}
-.note{margin-top:12px;color:var(--gold);text-align:center;min-height:20px;font-size:14px}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,rgba(101,88,245,.2),transparent 42%),var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:18px 16px 38px;letter-spacing:-.01em}
+h1{font-size:27px;letter-spacing:-.045em;line-height:1.15;margin:8px 0 6px;font-weight:800}
+.sub{color:var(--muted);font-size:14px;line-height:1.45;margin-bottom:20px}
+.nav{display:flex;gap:5px;margin-bottom:24px;padding:5px;background:#10172a;border:1px solid var(--line);border-radius:15px}
+.nav a{flex:1;text-align:center;padding:11px 8px;border-radius:11px;background:transparent;color:var(--muted);text-decoration:none;font-size:13px;font-weight:650;transition:background .2s,color .2s}
+.nav a.on{background:linear-gradient(135deg,#8175ff,#5d55e9);color:white;box-shadow:0 5px 18px rgba(101,88,245,.24)}
+.fig{display:flex;justify-content:center;align-items:center;min-height:190px;margin:8px 0 22px;padding:14px;border-radius:22px;background:linear-gradient(145deg,rgba(101,88,245,.12),rgba(20,28,48,.8));border:1px solid var(--line);overflow:hidden}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;color:var(--muted);font-size:14px;font-weight:600}
+.val{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.val small{font-size:13px;color:var(--muted);margin-left:5px;font-weight:500;letter-spacing:0}
+.ctl{display:flex;align-items:center;gap:10px;margin-top:8px}
+.ctl button{flex:0 0 42px;width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:22px;font-weight:500;transition:transform .15s,background .15s}
+.ctl button:active{transform:scale(.95);background:var(--card2)}
+input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
+.label{color:var(--text);font-size:14px;font-weight:750;margin:25px 0 10px;letter-spacing:-.01em}
+.opts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+.opt{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 3px 9px;text-align:center;font-size:10px;line-height:1.25;font-weight:650;color:#c4cce0;transition:all .18s;overflow:hidden}
+.opt svg{width:32px;height:51px;display:block;margin:0 auto 7px;fill:#8895b5;transition:fill .18s}
+.opt.on{background:linear-gradient(160deg,rgba(101,88,245,.24),rgba(101,88,245,.1));border-color:#8175ff;color:#fff;box-shadow:inset 0 0 0 1px rgba(129,117,255,.14)}
+.opt.on svg{fill:#b8b2ff}
+.main{width:100%;margin-top:28px;padding:16px;border:0;border-radius:15px;background:linear-gradient(135deg,#8175ff,#5d55e9);color:#fff;font-size:15px;font-weight:750;letter-spacing:-.01em;box-shadow:0 9px 25px rgba(101,88,245,.24);transition:transform .15s,filter .15s}
+.main:active{transform:scale(.985);filter:brightness(.95)}
+.note{margin-top:13px;color:#a5b4fc;text-align:center;min-height:20px;font-size:13px;font-weight:600}
+@media(max-width:360px){body{padding-left:12px;padding-right:12px}.opts{gap:5px}.opt{font-size:9px}.opt svg{width:29px}}
 </style>
 </head>
 <body>
