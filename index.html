@@ -14,12 +14,13 @@ h1{font-size:27px;letter-spacing:-.045em;line-height:1.15;margin:8px 0 6px;font-
 .nav{display:flex;gap:5px;margin-bottom:24px;padding:5px;background:#10172a;border:1px solid var(--line);border-radius:15px}
 .nav a{flex:1;text-align:center;padding:11px 8px;border-radius:11px;background:transparent;color:var(--muted);text-decoration:none;font-size:13px;font-weight:650;transition:background .2s,color .2s}
 .nav a.on{background:linear-gradient(135deg,#8175ff,#5d55e9);color:white;box-shadow:0 5px 18px rgba(101,88,245,.24)}
-.fig{display:flex;justify-content:center;align-items:flex-end;gap:26px;min-height:190px;margin:8px 0 22px;padding:20px 14px 12px;border-radius:22px;background:linear-gradient(145deg,rgba(101,88,245,.12),rgba(20,28,48,.8));border:1px solid var(--line);overflow:hidden}
+.fig{--ic-bg:#131a33;display:flex;justify-content:center;align-items:flex-end;gap:26px;min-height:190px;margin:8px 0 22px;padding:20px 14px 12px;border-radius:22px;background:linear-gradient(145deg,rgba(101,88,245,.12),rgba(20,28,48,.8));border:1px solid var(--line);overflow:hidden}
 .fvw{display:flex;flex-direction:column;align-items:center;gap:8px}
 .fv{display:flex}
-.fv svg{height:100%;width:auto;display:block;fill:#aeb6d6}
-.fv .arm{fill:#7d87ad}
+.fv svg{height:100%;width:auto;display:block;overflow:visible;fill:none;color:#c9cffa}
 .cap{font-size:11px;color:var(--muted);font-weight:600}
+svg .b{fill:var(--ic-bg);stroke:currentColor;stroke-width:2.2px;stroke-linejoin:round;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.fv svg .b{stroke-width:2.6px}
 .row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;color:var(--muted);font-size:14px;font-weight:600}
 .val{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .val small{font-size:13px;color:var(--muted);margin-left:5px;font-weight:500;letter-spacing:0}
@@ -30,13 +31,13 @@ input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
 .label{color:var(--text);font-size:15px;font-weight:750;margin:26px 0 4px;letter-spacing:-.01em}
 .hint{color:var(--muted);font-size:13px;margin-bottom:10px;line-height:1.4}
 .opts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
-.opt{grid-column:span 2;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 6px 11px;text-align:center;color:#c4cce0;transition:all .18s;overflow:hidden}
+.opt{--ic-bg:#141c30;grid-column:span 2;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 6px 11px;text-align:center;color:#c4cce0;transition:all .18s;overflow:hidden}
 .opt:nth-child(n+4){grid-column:span 3}
-.opt svg{height:96px;width:auto;display:block;margin:0 auto 8px;fill:#8895b5;transition:fill .18s}
+.opt svg{height:96px;width:auto;display:block;margin:0 auto 8px;overflow:visible;fill:none;color:#8895b5;transition:color .18s}
 .opt div{font-size:13px;font-weight:750;color:#e8ecff}
 .opt small{display:block;margin-top:3px;font-size:11px;font-weight:500;line-height:1.3;color:var(--muted)}
-.opt.on{background:linear-gradient(160deg,rgba(101,88,245,.28),rgba(101,88,245,.1));border-color:#8175ff;box-shadow:inset 0 0 0 1px rgba(129,117,255,.14)}
-.opt.on svg{fill:#b8b2ff}
+.opt.on{--ic-bg:#1c2147;background:linear-gradient(160deg,rgba(101,88,245,.28),rgba(101,88,245,.1));border-color:#8175ff;box-shadow:inset 0 0 0 1px rgba(129,117,255,.14)}
+.opt.on svg{color:#c9c4ff}
 .opt.on small{color:#cfd3ff}
 .main{width:100%;margin-top:28px;padding:16px;border:0;border-radius:15px;background:linear-gradient(135deg,#8175ff,#5d55e9);color:#fff;font-size:15px;font-weight:750;letter-spacing:-.01em;box-shadow:0 9px 25px rgba(101,88,245,.24);transition:transform .15s,filter .15s}
 .main:active{transform:scale(.985);filter:brightness(.95)}
@@ -85,18 +86,18 @@ const BEL=[
 {n:'Заметный',d:'Нависает над ремнём',b:19},
 {n:'Большой',d:'Сильно нависает',b:27}
 ];
-function head(cx){return `<circle cx='${cx}' cy='19' r='11'/><rect x='${cx-5}' y='28' width='10' height='14'/>`;}
+function head(cx){return `<circle class='b' cx='${cx}' cy='20' r='11'/>`;}
 function front(sh,wa,hi,guides){
 const c=50,a=7+hi*0.22,m=Math.max(sh,hi);
-const body=`<path d='M${c-sh} 50 C${c-sh+3} 43 ${c-9} 41 ${c-5} 38 L${c+5} 38 C${c+9} 41 ${c+sh-3} 43 ${c+sh} 50 C${c+sh} 62 ${c+wa+3} 74 ${c+wa} 88 C${c+wa} 98 ${c+hi} 102 ${c+hi} 114 C${c+hi-1} 150 ${c+a} 172 ${c+a} 190 L${c+3} 190 L${c+2} 128 Q${c} 122 ${c-2} 128 L${c-3} 190 L${c-a} 190 C${c-a} 172 ${c-hi+1} 150 ${c-hi} 114 C${c-hi} 102 ${c-wa} 98 ${c-wa} 88 C${c-wa-3} 74 ${c-sh} 62 ${c-sh} 50 Z'/>`;
-const arm=g=>{const X=d=>c+g*d;return `<path d='M${X(sh-3)} 50 C${X(sh+6)} 46 ${X(sh+9)} 58 ${X(m+11)} 96 L${X(m+10)} 122 Q${X(m+7.5)} 128 ${X(m+5)} 122 L${X(m+5)} 98 C${X(m+4)} 80 ${X(sh-1)} 70 ${X(sh-4)} 62 Z'/>`;};
+const body=`<path class='b' d='M${c-sh} 50 C${c-sh+3} 43 ${c-9} 41 ${c-5} 38 L${c+5} 38 C${c+9} 41 ${c+sh-3} 43 ${c+sh} 50 C${c+sh} 62 ${c+wa+3} 74 ${c+wa} 88 C${c+wa} 98 ${c+hi} 102 ${c+hi} 114 C${c+hi-1} 150 ${c+a} 172 ${c+a} 190 L${c+3} 190 L${c+2} 128 Q${c} 122 ${c-2} 128 L${c-3} 190 L${c-a} 190 C${c-a} 172 ${c-hi+1} 150 ${c-hi} 114 C${c-hi} 102 ${c-wa} 98 ${c-wa} 88 C${c-wa-3} 74 ${c-sh} 62 ${c-sh} 50 Z'/>`;
+const arm=g=>{const X=d=>c+g*d;return `<path class='b' d='M${X(sh-3)} 50 C${X(sh+6)} 46 ${X(sh+9)} 58 ${X(m+11)} 96 L${X(m+10)} 122 Q${X(m+7.5)} 128 ${X(m+5)} 122 L${X(m+5)} 98 C${X(m+4)} 80 ${X(sh-1)} 70 ${X(sh-4)} 62 Z'/>`;};
 const gd=guides?`<g stroke='rgba(255,255,255,.4)' stroke-width='.8' stroke-dasharray='2 2'><line x1='${c-sh*0.92}' y1='62' x2='${c+sh*0.92}' y2='62'/><line x1='${c-wa}' y1='88' x2='${c+wa}' y2='88'/><line x1='${c-hi}' y1='112' x2='${c+hi}' y2='112'/></g>`:'';
-return `<svg viewBox='-10 0 120 200'>${head(c)}${arm(-1)}${arm(1)}${body}${gd}</svg>`;
+return `<svg viewBox='-10 0 120 200'>${arm(-1)}${arm(1)}${body}${head(c)}${gd}</svg>`;
 }
 function side(b,kd,withArm){
-const p=`<path d='M44 38 C38 44 36 56 38 72 C39 88 36 100 35 114 C34 124 36 130 38 138 L40 188 L40 192 L68 192 L68 188 L56 186 C57 168 60 150 60 134 C60 126 62 118 62 112 C${62+b*0.5} 108 ${62+b} 100 ${62+b} 90 C${62+b} 80 ${62+b*0.3} 72 62 62 C62 56 61 48 57 42 L55 38 Z'/>`;
-const am=withArm?`<path class='arm' d='M45 48 C55 48 57 62 56 92 L55 124 Q50 131 45 124 L45 92 C44 72 43 58 45 48 Z'/>`:'';
-return `<svg viewBox='0 0 110 200'>${head(53)}<g transform='translate(50 0) scale(${kd} 1) translate(-50 0)'>${p}${am}</g></svg>`;
+const p=`<path class='b' d='M44 38 C38 44 36 56 38 72 C39 88 36 100 35 114 C34 124 36 130 38 138 L40 188 L40 192 L68 192 L68 188 L56 186 C57 168 60 150 60 134 C60 126 62 118 62 112 C${62+b*0.5} 108 ${62+b} 100 ${62+b} 90 C${62+b} 80 ${62+b*0.3} 72 62 62 C62 56 61 48 57 42 L55 38 Z'/>`;
+const am=withArm?`<path class='b' d='M45 48 C55 48 57 62 56 92 L55 124 Q50 131 45 124 L45 92 C44 72 43 58 45 48 Z'/>`:'';
+return `<svg viewBox='0 0 110 200'><g transform='translate(50 0) scale(${kd} 1) translate(-50 0)'>${p}${am}</g>${head(53)}</svg>`;
 }
 let saved={};
 try{saved=JSON.parse(localStorage.getItem('razmerchik_profile')||'{}')}catch(e){}
