@@ -8,13 +8,18 @@
 <style>
 :root{color-scheme:dark;--bg:#0b1020;--card:#141c30;--card2:#19243b;--text:#f3f6ff;--muted:#929db5;--line:rgba(160,177,220,.16);--gold:#a5b4fc;--accent:#6558f5;--accent2:#8b5cf6}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,rgba(101,88,245,.2),transparent 42%),var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;padding:18px 16px 38px;letter-spacing:-.01em}
+body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -15%,rgba(101,88,245,.2),transparent 42%),var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:18px 16px 38px;letter-spacing:-.01em}
 h1{font-size:27px;letter-spacing:-.045em;line-height:1.15;margin:8px 0 6px;font-weight:800}
 .sub{color:var(--muted);font-size:14px;line-height:1.45;margin-bottom:20px}
 .nav{display:flex;gap:5px;margin-bottom:24px;padding:5px;background:#10172a;border:1px solid var(--line);border-radius:15px}
 .nav a{flex:1;text-align:center;padding:11px 8px;border-radius:11px;background:transparent;color:var(--muted);text-decoration:none;font-size:13px;font-weight:650;transition:background .2s,color .2s}
 .nav a.on{background:linear-gradient(135deg,#8175ff,#5d55e9);color:white;box-shadow:0 5px 18px rgba(101,88,245,.24)}
-.fig{display:flex;justify-content:center;align-items:center;min-height:190px;margin:8px 0 22px;padding:14px;border-radius:22px;background:linear-gradient(145deg,rgba(101,88,245,.12),rgba(20,28,48,.8));border:1px solid var(--line);overflow:hidden}
+.fig{display:flex;justify-content:center;align-items:flex-end;gap:26px;min-height:190px;margin:8px 0 22px;padding:20px 14px 12px;border-radius:22px;background:linear-gradient(145deg,rgba(101,88,245,.12),rgba(20,28,48,.8));border:1px solid var(--line);overflow:hidden}
+.fvw{display:flex;flex-direction:column;align-items:center;gap:8px}
+.fv{display:flex}
+.fv svg{height:100%;width:auto;display:block;fill:#aeb6d6}
+.fv .arm{fill:#7d87ad}
+.cap{font-size:11px;color:var(--muted);font-weight:600}
 .row{display:flex;justify-content:space-between;align-items:center;margin-top:20px;color:var(--muted);font-size:14px;font-weight:600}
 .val{font-size:30px;font-weight:800;color:var(--text);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .val small{font-size:13px;color:var(--muted);margin-left:5px;font-weight:500;letter-spacing:0}
@@ -22,16 +27,21 @@ h1{font-size:27px;letter-spacing:-.045em;line-height:1.15;margin:8px 0 6px;font-
 .ctl button{flex:0 0 42px;width:42px;height:42px;border-radius:13px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:22px;font-weight:500;transition:transform .15s,background .15s}
 .ctl button:active{transform:scale(.95);background:var(--card2)}
 input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
-.label{color:var(--text);font-size:14px;font-weight:750;margin:25px 0 10px;letter-spacing:-.01em}
-.opts{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
-.opt{min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 3px 9px;text-align:center;font-size:10px;line-height:1.25;font-weight:650;color:#c4cce0;transition:all .18s;overflow:hidden}
-.opt svg{width:32px;height:51px;display:block;margin:0 auto 7px;fill:#8895b5;transition:fill .18s}
-.opt.on{background:linear-gradient(160deg,rgba(101,88,245,.24),rgba(101,88,245,.1));border-color:#8175ff;color:#fff;box-shadow:inset 0 0 0 1px rgba(129,117,255,.14)}
+.label{color:var(--text);font-size:15px;font-weight:750;margin:26px 0 4px;letter-spacing:-.01em}
+.hint{color:var(--muted);font-size:13px;margin-bottom:10px;line-height:1.4}
+.opts{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.opt{grid-column:span 2;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 6px 11px;text-align:center;color:#c4cce0;transition:all .18s;overflow:hidden}
+.opt:nth-child(n+4){grid-column:span 3}
+.opt svg{height:96px;width:auto;display:block;margin:0 auto 8px;fill:#8895b5;transition:fill .18s}
+.opt div{font-size:13px;font-weight:750;color:#e8ecff}
+.opt small{display:block;margin-top:3px;font-size:11px;font-weight:500;line-height:1.3;color:var(--muted)}
+.opt.on{background:linear-gradient(160deg,rgba(101,88,245,.28),rgba(101,88,245,.1));border-color:#8175ff;box-shadow:inset 0 0 0 1px rgba(129,117,255,.14)}
 .opt.on svg{fill:#b8b2ff}
+.opt.on small{color:#cfd3ff}
 .main{width:100%;margin-top:28px;padding:16px;border:0;border-radius:15px;background:linear-gradient(135deg,#8175ff,#5d55e9);color:#fff;font-size:15px;font-weight:750;letter-spacing:-.01em;box-shadow:0 9px 25px rgba(101,88,245,.24);transition:transform .15s,filter .15s}
 .main:active{transform:scale(.985);filter:brightness(.95)}
 .note{margin-top:13px;color:#a5b4fc;text-align:center;min-height:20px;font-size:13px;font-weight:600}
-@media(max-width:360px){body{padding-left:12px;padding-right:12px}.opts{gap:5px}.opt{font-size:9px}.opt svg{width:29px}}
+@media(max-width:360px){body{padding-left:12px;padding-right:12px}.opts{gap:6px}.opt{padding:10px 4px}.opt small{font-size:10px}}
 </style>
 </head>
 <body>
@@ -47,10 +57,12 @@ input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
 <div class='row'><span>Вес</span><span class='val'><span id='wv'>70</span><small>кг</small></span></div>
 <div class='ctl'><button data-t='w' data-d='-1'>−</button><input id='w' type='range' min='40' max='150' value='70'><button data-t='w' data-d='1'>+</button></div>
 
-<div class='label'>Силуэт</div>
+<div class='label'>Фигура</div>
+<div class='hint'>Посмотри на себя в зеркало спереди: где тело шире всего?</div>
 <div class='opts' id='sil'></div>
 
 <div class='label'>Живот</div>
+<div class='hint'>Посмотри на себя сбоку: насколько живот выступает вперёд?</div>
 <div class='opts' id='bel'></div>
 
 <button class='main' id='save'>Сохранить профиль</button>
@@ -60,22 +72,31 @@ input[type=range]{flex:1;min-width:0;accent-color:#8175ff;height:28px}
 const tg=window.Telegram&&Telegram.WebApp;
 if(tg){tg.ready();tg.expand();}
 const SIL=[
-{n:'Трапеция',s:18,w:12,h:11},
-{n:'Атлет',s:21,w:12,h:13},
-{n:'Прямой',s:15,w:15,h:15},
-{n:'Груша',s:12,w:13,h:19},
-{n:'Овал',s:15,w:20,h:16}
+{n:'Трапеция',d:'Плечи шире бёдер',sh:27,wa:17,hi:15},
+{n:'Атлет',d:'Очень широкие плечи, узкая талия',sh:30,wa:15,hi:17},
+{n:'Прямой',d:'Плечи, талия и бёдра одной ширины',sh:22,wa:21,hi:21},
+{n:'Груша',d:'Бёдра шире плеч',sh:20,wa:18,hi:28},
+{n:'Овал',d:'Шире всего в середине',sh:24,wa:29,hi:24}
 ];
 const BEL=[
-{n:'Плоский',w:11},
-{n:'Лёгкий',w:13},
-{n:'Средний',w:16},
-{n:'Заметный',w:19},
-{n:'Большой',w:22}
+{n:'Плоский',d:'Ровный, не выступает',b:-1},
+{n:'Лёгкий',d:'Чуть выступает вперёд',b:5},
+{n:'Средний',d:'Заметно выступает',b:12},
+{n:'Заметный',d:'Нависает над ремнём',b:19},
+{n:'Большой',d:'Сильно нависает',b:27}
 ];
-function icon(s,w,h){
-const c=30;
-return `<svg viewBox='0 0 60 100'><circle cx='30' cy='11' r='8'/><path stroke-linejoin='round' d='M${c-s} 26 L${c+s} 26 L${c+w} 55 L${c+h} 78 L${c+h*0.7} 98 L${c+2} 98 L${c} 80 L${c-2} 98 L${c-h*0.7} 98 L${c-h} 78 L${c-w} 55 Z'/></svg>`;
+function head(cx){return `<circle cx='${cx}' cy='19' r='11'/><rect x='${cx-5}' y='28' width='10' height='14'/>`;}
+function front(sh,wa,hi,guides){
+const c=50,a=7+hi*0.22,m=Math.max(sh,hi);
+const body=`<path d='M${c-sh} 50 C${c-sh+3} 43 ${c-9} 41 ${c-5} 38 L${c+5} 38 C${c+9} 41 ${c+sh-3} 43 ${c+sh} 50 C${c+sh} 62 ${c+wa+3} 74 ${c+wa} 88 C${c+wa} 98 ${c+hi} 102 ${c+hi} 114 C${c+hi-1} 150 ${c+a} 172 ${c+a} 190 L${c+3} 190 L${c+2} 128 Q${c} 122 ${c-2} 128 L${c-3} 190 L${c-a} 190 C${c-a} 172 ${c-hi+1} 150 ${c-hi} 114 C${c-hi} 102 ${c-wa} 98 ${c-wa} 88 C${c-wa-3} 74 ${c-sh} 62 ${c-sh} 50 Z'/>`;
+const arm=g=>{const X=d=>c+g*d;return `<path d='M${X(sh-3)} 50 C${X(sh+6)} 46 ${X(sh+9)} 58 ${X(m+11)} 96 L${X(m+10)} 122 Q${X(m+7.5)} 128 ${X(m+5)} 122 L${X(m+5)} 98 C${X(m+4)} 80 ${X(sh-1)} 70 ${X(sh-4)} 62 Z'/>`;};
+const gd=guides?`<g stroke='rgba(255,255,255,.4)' stroke-width='.8' stroke-dasharray='2 2'><line x1='${c-sh*0.92}' y1='62' x2='${c+sh*0.92}' y2='62'/><line x1='${c-wa}' y1='88' x2='${c+wa}' y2='88'/><line x1='${c-hi}' y1='112' x2='${c+hi}' y2='112'/></g>`:'';
+return `<svg viewBox='-10 0 120 200'>${head(c)}${arm(-1)}${arm(1)}${body}${gd}</svg>`;
+}
+function side(b,kd,withArm){
+const p=`<path d='M44 38 C38 44 36 56 38 72 C39 88 36 100 35 114 C34 124 36 130 38 138 L40 188 L40 192 L68 192 L68 188 L56 186 C57 168 60 150 60 134 C60 126 62 118 62 112 C${62+b*0.5} 108 ${62+b} 100 ${62+b} 90 C${62+b} 80 ${62+b*0.3} 72 62 62 C62 56 61 48 57 42 L55 38 Z'/>`;
+const am=withArm?`<path class='arm' d='M45 48 C55 48 57 62 56 92 L55 124 Q50 131 45 124 L45 92 C44 72 43 58 45 48 Z'/>`:'';
+return `<svg viewBox='0 0 110 200'>${head(53)}<g transform='translate(50 0) scale(${kd} 1) translate(-50 0)'>${p}${am}</g></svg>`;
 }
 let saved={};
 try{saved=JSON.parse(localStorage.getItem('razmerchik_profile')||'{}')}catch(e){}
@@ -86,7 +107,7 @@ el.innerHTML='';
 list.forEach((o,i)=>{
 const d=document.createElement('div');
 d.className='opt'+(state[k]===i?' on':'');
-d.innerHTML=mk(o)+o.n;
+d.innerHTML=mk(o)+'<div>'+o.n+'</div><small>'+o.d+'</small>';
 d.onclick=()=>{state[k]=i;render();};
 el.appendChild(d);
 });
@@ -96,14 +117,16 @@ document.getElementById('h').value=state.h;
 document.getElementById('w').value=state.w;
 document.getElementById('hv').textContent=state.h;
 document.getElementById('wv').textContent=state.w;
-renderOpts('sil',SIL,'sil',o=>icon(o.s,o.w,o.h));
-renderOpts('bel',BEL,'bel',o=>icon(14,o.w,14));
-const sil=SIL[state.sil],bel=BEL[state.bel];
-const scale=0.55+(state.h-140)/70*0.45;
+renderOpts('sil',SIL,'sil',o=>front(o.sh,o.wa,o.hi,false));
+renderOpts('bel',BEL,'bel',o=>side(o.b,1,false));
+const sl=SIL[state.sil],bl=BEL[state.bel];
 const bulk=(state.w-40)/110;
-const k=0.8+bulk*0.6;
-const s=sil.s*k,w=(sil.w+bel.w)/2*k,h=sil.h*k;
-document.getElementById('fig').innerHTML=icon(s,w,h).replace('<svg ',`<svg style='fill:#a9a595;height:${(200*scale).toFixed(0)}px' `);
+const k=0.82+bulk*0.55,kd=0.9+bulk*0.35;
+const ew=[-1,0,2,5,9][state.bel];
+const ph=Math.round(170+(state.h-140)/70*70);
+const f=front(sl.sh*k,sl.wa*k+ew,sl.hi*k,true);
+const s=side(bl.b,kd,true);
+document.getElementById('fig').innerHTML=`<div class='fvw'><div class='fv' style='height:${ph}px'>${f}</div><div class='cap'>Спереди</div></div><div class='fvw'><div class='fv' style='height:${ph}px'>${s}</div><div class='cap'>Сбоку</div></div>`;
 }
 document.getElementById('h').oninput=e=>{state.h=+e.target.value;render();};
 document.getElementById('w').oninput=e=>{state.w=+e.target.value;render();};
